@@ -7,7 +7,7 @@ JS和OC/Swift相互调用,主要总结了JS和OC交互的三种方式
 
 3.使用第三方框架[WebViewJavascriptBridge](https://github.com/marcuswestin/WebViewJavascriptBridge)实现
 
-##JavaScriptCore
+## JavaScriptCore
 
 在Swift中获取JS的context
 
@@ -53,7 +53,7 @@ self.context = context;
 self.context[@"OC"] = self;
 ```
 
-##WKScriptMessageHandler
+## WKScriptMessageHandler
 
 初始化WKWebView后,添加供js调用oc/Swift的桥梁，这里的name对应WKScriptMessage中的name
 
@@ -73,7 +73,7 @@ self.webView.evaluateJavaScript(jsStr as String, completionHandler: { (result:An
        print("error:",error as Any)
  })
 ```
-##WebViewJavascriptBridge
+## WebViewJavascriptBridge
 
 初始化WKWebViewJavascriptBridge
 
