@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf8">
+    </head>
+    <body>
+        <script>
+            /*这段代码是固定的，必须要放到js中*/
+            function setupWebViewJavascriptBridge(callback) {
+                if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+                if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+                window.WVJBCallbacks = [callback];
+                var WVJBIframe = document.createElement('iframe');
+                WVJBIframe.style.display = 'none';
+                WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+                document.documentElement.appendChild(WVJBIframe);
+                setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+            }
+            /*与OC交互的所有JS方法都要放在此处注册，才能调用通过JS调用OC或者让OC调用这里的JS*/
+            setupWebViewJavascriptBridge(function(bridge) {
+                 bridge.registerHandler('callback', function(data, responseCallback) {
+                    callback(data);
+                    responseCallback('js执行过了'+data);
+                })
+            })
+
+             function callback(something){
+                 var target = document.getElementById('result');
+                 target.innerHTML = something;
+             }
+             function alertCallback(aString,bString){
+                 alert(aString+bString);
+             }
+             function showMessage() {
+                 WebViewJavascriptBridge.callHandler('showMessage','我是标题');
+             }
+             function showTitleAndMessage(params) {
+                WebViewJavascriptBridge.callHandler('showTitleAndMessage',params);
+             }
+             function doSomethingThenCallBack() {
+                 WebViewJavascriptBridge.callHandler('doSomethingThenCallBack',null,function(response) {
+                     alert(response);
+                     document.getElementById("result").value = response;
+                });
+             }
+            </script>
+        <br/>
+        <br/>
+        <div>
+            <input type="button" value="用block实现JS调用一个参数或无参数OC方法" onclick="showMessage()">
+        </div>
+        <div>
+            <input type="button" value="用block实现JS调用多参数的OC方法" onclick="showTitleAndMessage({titile:'这是我传的标题哦！',content:'我调用了showTitleAndMessage方法'})">
+        </div>
+        <div>
+            <input type="button" value="用block实现JS调用OC方法并回调" onclick="doSomethingThenCallBack()">
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <div>
+            <h4>回调结果:</h4>
+            <span id="result"></span>
+        </div>
+    </body>
+</html>
+
